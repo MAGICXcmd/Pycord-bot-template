@@ -3,14 +3,14 @@ from discord.ext import commands
 
 from pathlib import Path
 
-import config
+from bot import config
 
 
 class Bot(commands.Bot):
     __slots__ = ('extensions')
     def __init__(self, *args) -> None:
         self.ready = False
-        self.extensions = [p.stem for p in Path('./cogs/').glob('*.py')]
+        self.extensions = [p.stem for p in Path('./bot/cogs/').glob('*.py')]
 
         super().__init__(
             command_prefix=commands.when_mentioned_or('/'),
@@ -25,13 +25,13 @@ class Bot(commands.Bot):
         )
 
     def setup(self) -> None:
-        print('Installation of cogs begins...')
+        print('⏳ Installation of cogs begins...')
         for ext in self.extensions:
-            self.load_extension(f'cogs.{ext}')
-            print(f'- `{ext}` cog loaded.')
+            self.load_extension(f'bot.cogs.{ext}')
+            print(f'✔ "{ext}" cog loaded.')
 
     def run(self) -> None:
-        print('Bot running...')
+        print('⌛ Bot running...\n')
         self.setup()
         super().run(config.TOKEN, reconnect=True)
 
@@ -44,19 +44,19 @@ class Bot(commands.Bot):
         self.infout = self.guild.get_channel(config.INFORMATION_CHANNEL_ID)
 
         await self.infout.send('Bot start!')
-        print(f'- Connected as {self.user.name} with ID: {self.user.id}')
-        print('Have a nice day!')
+        print(f'✔ Connected as {self.user.name} with ID: {self.user.id}')
+        print('🤖 Have a nice day!')
 
     async def close(self) -> None:
-        print('Shutdown...')
+        print('❌ Shutdown...')
         await self.infout.send('Shutdown....')
         await super().close()
 
     async def on_connect(self) -> None:
-        print(f'- Discord WebSocket Latency: {self.latency * 1000:,.0f} ms')
+        print(f'\n✔ Discord WebSocket Latency: {self.latency * 1000:,.0f} ms')
 
     async def on_disconnect(self) -> None:
-        print('- Bot disconnected.')
+        print('❌ Bot disconnected.')
 
 
     async def on_message(self, message: discord.Message) -> None:

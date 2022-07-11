@@ -1,4 +1,4 @@
-from utils.bot import Bot
+from bot import Bot
 
 bot = Bot()
 
